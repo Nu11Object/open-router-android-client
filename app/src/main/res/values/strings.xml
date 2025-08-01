@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">OpenRouter::client</string>
+    <string name="context">context</string>
+    <string name="models">models</string>
+    <string name="no_reasoning_support">No reasoning support</string>
+    <string name="supports_reasoning">Supports reasoning</string>
+    <string name="reasoning">Reasoning</string>
+    <string name="send">Send</string>
+    <string name="app_headline">OpenRouter::<font color="#D97EFF">client</font></string>
+    <string name="hint_user_query">Type your query here…</string>
+    <string name="open_settings">Open settings</string>
+    <string name="user_greeting">Nice to see you!</string>
+    <string name="error_unknown">Got unknown error, parse failed.</string>
+    <string name="error_blank_input">Query can not be blank.</string>
+    <string name="error_blank_api_key">API key can\'t be blank.</string>
+    <string name="error_no_api_key">Missing API key.\nPlease add it in settings.</string>
+    <string name="error_missing_model">Model is missing.</string>
+    <string name="error_missing_api_key">Api key is missing.</string>
+    <string name="error_network">Something went wrong. Please check your internet connection and try again.</string>
+    <string name="error_cancelled">The request was cancelled because the app was closed.</string>
+    <string name="error_header_open_router">OpenRouter returned error</string>
+    <string name="error_header_network">Network error</string>
+    <string name="error_header_cancelled">Request was cancelled</string>
+    <string name="response_placeholder">Waiting for model response…</string>
+    <string name="select">Select</string>
+    <string name="api_key">API key</string>
+    <string name="default_api_key_button">Use default key</string>
+    <string name="save_api_key">Save API key</string>
+    <string name="clear_chat_button">Clear chat history (with context)</string>
+    <string name="pinned_models">Pinned models</string>
+    <string name="pinned_models_placeholder">Pin your favorites to keep them at the top – they\'ll save locally for instant access anytime!</string>
+    <string name="available_models_header">Available models</string>
+    <string name="available_models_description">Tap below to explore AI models from OpenRouter.</string>
+    <string name="browse_models">Browse models</string>
+    <string name="model_name">Model name</string>
+    <string name="free">Free</string>
+    <string name="paid">Paid</string>
+    <string name="get_api_key_hint">Get your own API key at OpenRouter.ai for free.</string>
+    <string name="chat">Chat settings</string>
+    <string name="saved">Saved!</string>
+    <string name="answer">Answer:</string>
+</resources>

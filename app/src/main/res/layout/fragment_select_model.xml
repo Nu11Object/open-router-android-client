@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".presentation.aimodels.SelectModelFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="36dp"
+        android:paddingTop="24dp">
+
+        <TextView
+            style="@style/TextAppearance.OpenRouterClient.TitleMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pinned_models" />
+
+        <TextView
+            android:id="@+id/tv_pinned_models_placeholder"
+            style="@style/TextAppearance.OpenRouterClient.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pinned_models_placeholder" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rc_pinned_models"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_ai_model" />
+
+        <TextView
+            style="@style/TextAppearance.OpenRouterClient.TitleMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/available_models_header" />
+
+        <TextView
+            android:id="@+id/tv_available_models_description"
+            style="@style/TextAppearance.OpenRouterClient.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/available_models_description" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_browse_models"
+            style="@style/AccentButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="12dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/browse_models"
+            app:icon="@drawable/ic_cloud"
+            app:iconSize="16dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_model_name"
+            style="@style/TextAppearance.OpenRouterClient.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/model_name"
+            android:visibility="gone"
+            app:boxStrokeColor="@color/light_purple"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="1dp"
+            app:endIconDrawable="@drawable/ic_clear"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/light_purple"
+            app:hintTextColor="@color/light_purple"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_model_name"
+                style="@style/TextAppearance.OpenRouterClient.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ProgressBar
+            android:id="@+id/pb_cloud_loading"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginTop="16dp"
+            android:indeterminateTint="@color/light_purple"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rc_cloud_models"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_ai_model" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

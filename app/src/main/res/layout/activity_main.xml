@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.MainActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="24dp"
+        tools:viewBindingIgnore="true" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="24dp"
+        tools:viewBindingIgnore="true" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="24dp"
+        tools:viewBindingIgnore="true" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="24dp"
+        tools:viewBindingIgnore="true" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_model_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/gray"
+        app:cardCornerRadius="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/guideline_top"
+        tools:viewBindingIgnore="true" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="12dp">
+
+            <TextView
+                android:id="@+id/tv_model_name"
+                style="@style/TextAppearance.OpenRouterClient.TitleMedium"
+                android:layout_width="0dp"
+                android:maxLines="1"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                app:layout_constraintBottom_toTopOf="@id/tv_supports_reasoning"
+                app:layout_constraintEnd_toStartOf="@+id/btn_select_model"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Deepseek R1" />
+
+            <TextView
+                android:id="@+id/tv_supports_reasoning"
+                style="@style/TextAppearance.OpenRouterClient.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_model_name"
+                tools:text="@string/supports_reasoning" />
+
+            <ImageView
+                android:id="@+id/iv_settings"
+                android:layout_width="20dp"
+                android:layout_height="0dp"
+                android:contentDescription="@string/open_settings"
+                android:src="@drawable/ic_settings"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_select_model"
+                style="@style/PrimaryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_marginEnd="12dp"
+                android:text="@string/models"
+                app:icon="@drawable/ic_models"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_settings"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_query_area"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/gray"
+        android:clipToPadding="true"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        tools:viewBindingIgnore="true" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginVertical="12dp">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_user_input"
+                style="@style/UserInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="16dp"
+                android:hint="@string/hint_user_query"
+                app:layout_constraintBottom_toTopOf="@+id/btn_toggle_context"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Some text query here. It can be multilined tho, check this feauture now, write your query! Some text query here. It can be multilined tho, check this feauture now, write your query! Some text query here. It can be multilined tho, check this feauture now, write your query!" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_toggle_context"
+                style="@style/OptionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/context"
+                app:icon="@drawable/ic_context"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/iv_reasoning_support"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_reasoning"
+                app:layout_constraintBottom_toBottomOf="@id/btn_toggle_context"
+                app:layout_constraintStart_toEndOf="@+id/btn_toggle_context"
+                app:layout_constraintTop_toTopOf="@+id/btn_toggle_context"
+                tools:tint="@color/light_purple" />
+
+            <TextView
+                android:id="@+id/tv_reasoning_support_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:textSize="12sp"
+                style="@style/TextAppearance.OpenRouterClient.Body"
+                android:text="@string/reasoning"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_reasoning_support"
+                app:layout_constraintStart_toEndOf="@+id/iv_reasoning_support"
+                app:layout_constraintTop_toTopOf="@+id/iv_reasoning_support"
+                tools:textColor="@color/light_purple"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_send_query"
+                style="@style/OptionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/purple"
+                android:text="@string/send"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_send"
+                app:iconGravity="textEnd"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:rippleColor="@color/white" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_app_headlines"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tv_app_headline, tv_greeting" />
+
+    <TextView
+        android:id="@+id/tv_app_headline"
+        style="@style/TextAppearance.OpenRouterClient.HeadlineLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:text="@string/app_headline"
+        app:layout_constraintBottom_toTopOf="@id/tv_greeting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_model_info"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:viewBindingIgnore="true" />
+
+    <TextView
+        android:id="@+id/tv_greeting"
+        style="@style/TextAppearance.OpenRouterClient.TitleMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_greeting"
+        app:layout_constraintBottom_toTopOf="@+id/card_query_area"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_app_headline"
+        tools:viewBindingIgnore="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rc_chat"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/card_query_area"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/card_model_info"
+        tools:visibility="visible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

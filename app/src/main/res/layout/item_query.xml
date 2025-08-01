@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp">
+
+    <TextView
+        android:id="@+id/tv_text"
+        style="@style/TextAppearance.OpenRouterClient.Input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/shape_chat_bubble"
+        android:maxWidth="330dp"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="10dp"
+        android:textIsSelectable="true"
+        tools:text="Text query example" />
+
+</FrameLayout>

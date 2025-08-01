@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Text -->
+
+    <style name="TextAppearance.OpenRouterClient.HeadlineLarge" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/rubik_medium</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TextAppearance.OpenRouterClient.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:fontFamily">@font/rubik_semibold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.OpenRouterClient.Button" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:fontFamily">@font/rubik_medium</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.OpenRouterClient.Subtitle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:fontFamily">@font/rubik_light</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="TextAppearance.OpenRouterClient.Body" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/rubik_light</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.OpenRouterClient.Input" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/rubik_light</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- Buttons -->
+
+    <style name="PrimaryButton" parent="ShapeAppearanceOverlay.Material3.Button">
+        <item name="cornerRadius">14dp</item>
+        <item name="backgroundTint">@color/gray_button</item>
+        <item name="android:fontFamily">@font/rubik_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="rippleColor">@color/purple</item>
+        <item name="android:paddingHorizontal">18dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconSize">16dp</item>
+        <item name="iconPadding">6dp</item>
+    </style>
+
+    <style name="AccentButton" parent="PrimaryButton">
+        <item name="backgroundTint">@color/dark_purple</item>
+        <item name="android:textColor">@color/light_purple</item>
+        <item name="iconTint">@color/light_purple</item>
+        <item name="iconSize">12dp</item>
+        <item name="iconGravity">textEnd</item>
+    </style>
+
+    <style name="OptionButton" parent="PrimaryButton">
+        <item name="cornerRadius">45dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="iconSize">12dp</item>
+        <item name="android:paddingHorizontal">14dp</item>
+    </style>
+
+    <style name="UserInput" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@null</item>
+        <item name="android:inputType">textMultiLine|textCapSentences</item>
+        <item name="android:maxLines">4</item>
+        <item name="android:minLines">1</item>
+        <item name="android:overScrollMode">always</item>
+        <item name="android:scrollbarStyle">insideInset</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:fontFamily">@font/rubik_light</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColorHighlight">@color/purple</item>
+    </style>
+
+</resources>

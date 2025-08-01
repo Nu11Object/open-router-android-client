@@ -1,0 +1,34 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.OpenRouterClient" parent="Theme.Material3.Dark.NoActionBar">
+
+        <!-- Colors -->
+        <item name="colorPrimary">@color/purple</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSecondary">@color/dark_purple</item>
+        <item name="colorOnSecondary">@color/light_purple</item>
+        <item name="colorOnTertiary">@color/light_gray</item>
+
+        <item name="android:colorBackground">@color/dark_gray</item>
+        <item name="colorSurface">@color/gray</item>
+        <item name="colorOnSurface">@color/white</item>
+
+        <item name="colorAccent">@color/purple</item>
+
+        <!-- Texts -->
+        <item name="textAppearanceHeadlineLarge">
+            @style/TextAppearance.OpenRouterClient.HeadlineLarge
+        </item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.OpenRouterClient.TitleMedium
+        </item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.OpenRouterClient.Button</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.OpenRouterClient.Subtitle</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.OpenRouterClient.Body</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.OpenRouterClient.Input</item>
+
+    </style>
+
+    <style name="Theme.OpenRouterClient" parent="Base.Theme.OpenRouterClient" />
+
+</resources>
