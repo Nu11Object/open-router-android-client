@@ -5,6 +5,7 @@
 ![Room](https://img.shields.io/badge/room-%237F52FF.svg?style=for-the-badge&logoColor=white)
 ![Retrofit2](https://img.shields.io/badge/retrofit2-%237F52FF.svg?style=for-the-badge&logoColor=white)
 ![Dagger2](https://img.shields.io/badge/dagger2-%237F52FF.svg?style=for-the-badge&logoColor=white)
+![Flow](https://img.shields.io/badge/Flow-%237F52FF.svg?style=for-the-badge&logoColor=white)
 
 **OpenRouter::client** — Android-приложение для общения с нейросетями через сервис [OpenRouter.ai](https://openrouter.ai/). <br>Проект разработан в **учебных целях** для закрепления  навыков.
 
@@ -35,12 +36,12 @@
 - **Data** (Room, Retrofit, Repositories, Mappers)
 - **DI** (Component, Modules, Scope, Qualifiers)
 
-Реализован MVVM-паттерн (ViewModel + LiveData).
+Реализован MVVM-паттерн (ViewModel + Flow).
 <br>Dependency Injection через Dagger2.
 
 ## Технологический стек
 
-- **Kotlin**, **Android SDK**, **Coroutines**, **ViewBinding**
+- **Kotlin**, **Android SDK**, **Coroutines**, **Flow**, **ViewBinding**
 - **Room** (хранение истории чата и избранных AI-моделей)
 - **Retrofit2** (сетевые запросы к OpenRouter API)
 - **Dagger2** (внедрение зависимостей)

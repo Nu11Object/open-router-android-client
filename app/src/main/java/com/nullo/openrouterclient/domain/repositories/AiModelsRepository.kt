@@ -1,11 +1,11 @@
 package com.nullo.openrouterclient.domain.repositories
 
-import androidx.lifecycle.LiveData
 import com.nullo.openrouterclient.domain.entities.AiModel
+import kotlinx.coroutines.flow.StateFlow
 
 interface AiModelsRepository {
 
-    fun getPinnedAiModels(): LiveData<List<AiModel>>
+    val pinnedAiModels: StateFlow<List<AiModel>>
 
     suspend fun getCloudAiModels(): List<AiModel>
 

@@ -1,18 +1,18 @@
 package com.nullo.openrouterclient.data.database.chat
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatDao {
 
     @Query("SELECT * FROM messages")
-    fun getMessages(): LiveData<List<MessageDbEntity>>
+    fun getMessages(): Flow<List<MessageDbEntity>>
 
     @Query("SELECT * FROM messages WHERE id = :id LIMIT 1")
     suspend fun getMessageById(id: Long): MessageDbEntity?

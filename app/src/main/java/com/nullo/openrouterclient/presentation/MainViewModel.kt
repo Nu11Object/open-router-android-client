@@ -1,13 +1,11 @@
 package com.nullo.openrouterclient.presentation
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullo.openrouterclient.R
 import com.nullo.openrouterclient.domain.entities.AiModel
-import com.nullo.openrouterclient.domain.entities.Message
 import com.nullo.openrouterclient.domain.usecases.chat.ClearChatUseCase
 import com.nullo.openrouterclient.domain.usecases.chat.GetChatMessagesUseCase
 import com.nullo.openrouterclient.domain.usecases.chat.HandleLoadingFailureUseCase
@@ -22,6 +20,13 @@ import com.nullo.openrouterclient.domain.usecases.settings.GetApiKeyUseCase
 import com.nullo.openrouterclient.domain.usecases.settings.GetContextEnabledUseCase
 import com.nullo.openrouterclient.domain.usecases.settings.SetApiKeyUseCase
 import com.nullo.openrouterclient.domain.usecases.settings.ToggleContextModeUseCase
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,76 +47,59 @@ class MainViewModel @Inject constructor(
     private val unpinAiModelUseCase: UnpinAiModelUseCase,
 ) : ViewModel() {
 
-    val messages: LiveData<List<Message>> = getChatMessagesUseCase()
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
 
-    val pinnedAiModels: LiveData<List<AiModel>> = getPinnedAiModelsUseCase()
+    private val _uiEvents = MutableSharedFlow<UiEvent>()
+    val uiEvents = _uiEvents.asSharedFlow()
 
-    private val _cloudAiModels = MutableLiveData<List<AiModel>>()
+    private val _cloudAiModels = MutableStateFlow<List<AiModel>>(emptyList())
 
-    private val _filteredCloudAiModels = MutableLiveData<List<AiModel>>()
-    val filteredCloudAiModels: LiveData<List<AiModel>>
-        get() = _filteredCloudAiModels
-
-    val currentModel: LiveData<AiModel> = getCurrentAiModelUseCase()
-    val contextEnabled: LiveData<Boolean> = getContextEnabledUseCase()
-    val apiKey: LiveData<String> = getApiKeyUseCase()
-
-    private val _loading = MutableLiveData(false)
-    val loading: LiveData<Boolean> get() = _loading
-
-    private val _error = MutableLiveData<ErrorType>()
-    val error: LiveData<ErrorType> get() = _error
-
-    private val _messageStringRes = MutableLiveData<Int>()
-    val userMessageStringRes: LiveData<Int> get() = _messageStringRes
+    private var browseCloudAiModelJob: Job? = null
+    private var searchCloudAiModelJob: Job? = null
 
     init {
-        viewModelScope.launch {
-            handleLoadingFailureUseCase()
-        }
+        initializeViewModel()
     }
 
     fun sendQuery(queryText: String) {
-
-        if (apiKey.value.isNullOrBlank()) {
-            _error.value = ErrorType.NO_API_KEY
-            return
-        }
-
-        if (queryText.isBlank()) {
-            _error.value = ErrorType.BLANK_INPUT
-            return
-        }
-
-        _loading.value = true
         viewModelScope.launch {
+
+            if (_uiState.value.apiKey.isBlank()) {
+                emitError(ErrorType.NO_API_KEY)
+                return@launch
+            }
+            if (queryText.isBlank()) {
+                emitError(ErrorType.BLANK_INPUT)
+                return@launch
+            }
+            val currentAiModel = _uiState.value.currentAiModel ?: run {
+                emitError(ErrorType.MISSING_MODEL)
+                return@launch
+            }
+
+            _uiState.value = _uiState.value.copy(waitingForResponse = true)
+
+            val context = if (_uiState.value.contextEnabled) _uiState.value.messages else null
             try {
-                val model = currentModel.value ?: run {
-                    _error.postValue(ErrorType.MISSING_MODEL)
-                    _loading.postValue(false)
-                    return@launch
-                }
-                val key = apiKey.value ?: run {
-                    _error.postValue(ErrorType.NO_API_KEY)
-                    _loading.postValue(false)
-                    return@launch
-                }
-                val context = if (contextEnabled.value == true) messages.value else null
-                sendQueryUseCase(model, queryText, context, key)
+                sendQueryUseCase(
+                    model = currentAiModel,
+                    queryText = queryText,
+                    context = context,
+                    apiKey = _uiState.value.apiKey
+                )
             } catch (e: Exception) {
                 Log.e(TAG_ERROR, "Error in sendQuery", e)
-                _error.postValue(ErrorType.NETWORK_ERROR)
+                emitError(ErrorType.NETWORK_ERROR)
             } finally {
-                _loading.postValue(false)
+                _uiState.value = _uiState.value.copy(waitingForResponse = false)
             }
         }
     }
 
     fun clearChat() {
-        _loading.value = true
         viewModelScope.launch {
             clearChatUseCase()
-            _loading.postValue(false)
         }
     }
 
@@ -124,28 +112,46 @@ class MainViewModel @Inject constructor(
     }
 
     fun setApiKey(apiKey: String) {
-        if (apiKey.isBlank()) {
-            _error.value = ErrorType.BLANK_API_KEY
-            return
+        viewModelScope.launch {
+            if (apiKey.isBlank()) {
+                emitError(ErrorType.BLANK_API_KEY)
+                return@launch
+            }
+            setApiKeyUseCase(apiKey)
+            emitUiMessage(R.string.saved)
         }
-        setApiKeyUseCase(apiKey)
-        _messageStringRes.value = R.string.saved
     }
 
     fun browseCloudModels() {
-        viewModelScope.launch {
-            val models = getCloudAiModelsUseCase()
-            _cloudAiModels.postValue(models)
-            _filteredCloudAiModels.postValue(models)
+        browseCloudAiModelJob?.cancel()
+        browseCloudAiModelJob = viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(loadingCloudAiModels = true)
+
+            try {
+                val models = getCloudAiModelsUseCase()
+                _cloudAiModels.value = models
+                _uiState.value = _uiState.value.copy(
+                    cloudAiModels = models,
+                    loadingCloudAiModels = false
+                )
+            } catch (_: Exception) {
+                _uiState.value = _uiState.value.copy(loadingCloudAiModels = false)
+                emitError(ErrorType.NETWORK_ERROR)
+            }
         }
     }
 
     fun filterCloudModelsByName(query: String) {
-        val original = _cloudAiModels.value.orEmpty()
-        _filteredCloudAiModels.value = if (query.isBlank()) {
-            original
-        } else {
-            original.filter { it.name.contains(query, ignoreCase = true) }
+        searchCloudAiModelJob?.cancel()
+        searchCloudAiModelJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_MS)
+            val original = _cloudAiModels.value
+            val filtered = if (query.isBlank()) {
+                original
+            } else {
+                original.filter { it.name.contains(query, ignoreCase = true) }
+            }
+            _uiState.value = _uiState.value.copy(cloudAiModels = filtered)
         }
     }
 
@@ -161,8 +167,44 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun initializeViewModel() {
+        viewModelScope.launch {
+            launch { handleLoadingFailureUseCase() }
+            launch { collectUiState() }
+        }
+    }
+
+    private suspend fun collectUiState() {
+        combine(
+            getChatMessagesUseCase(),
+            getPinnedAiModelsUseCase(),
+            getCurrentAiModelUseCase(),
+            getContextEnabledUseCase(),
+            getApiKeyUseCase(),
+        ) { messages, pinnedAiModels, currentAiModel, contextEnabled, apiKey ->
+            _uiState.value.copy(
+                messages = messages,
+                pinnedAiModels = pinnedAiModels,
+                currentAiModel = currentAiModel,
+                contextEnabled = contextEnabled,
+                apiKey = apiKey
+            )
+        }.collect { newState ->
+            _uiState.value = newState
+        }
+    }
+
+    private suspend fun emitError(errorType: ErrorType) {
+        _uiEvents.emit(UiEvent.ShowError(errorType))
+    }
+
+    private suspend fun emitUiMessage(@StringRes messageRes: Int) {
+        _uiEvents.emit(UiEvent.ShowMessage(messageRes))
+    }
+
     companion object {
 
         const val TAG_ERROR = "error"
+        private const val SEARCH_DEBOUNCE_MS = 300L
     }
 }
