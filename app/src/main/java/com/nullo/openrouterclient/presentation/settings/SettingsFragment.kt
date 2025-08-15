@@ -57,12 +57,12 @@ class SettingsFragment : BottomSheetDialogFragment() {
     private fun observeViewModel() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                observeUiState()
+                collectUiState()
             }
         }
     }
 
-    private suspend fun observeUiState() {
+    private suspend fun collectUiState() {
         viewModel.uiState.collect { state ->
             with(binding) {
                 etApiKey.setText(state.apiKey)

@@ -87,13 +87,13 @@ class MainActivity : AppCompatActivity() {
     private fun observeViewModel() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch { observeUiState() }
-                launch { observeUiEvents() }
+                launch { collectUiState() }
+                launch { collectUiEvents() }
             }
         }
     }
 
-    private suspend fun observeUiState() {
+    private suspend fun collectUiState() {
         viewModel.uiState.collect { state ->
             updateMessages(state.messages)
             updateCurrentAiModel(state.currentAiModel)
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun observeUiEvents() {
+    private suspend fun collectUiEvents() {
         viewModel.uiEvents.collect { event ->
             when (event) {
                 is ShowMessage -> showMessage(getString(event.messageStringRes))
