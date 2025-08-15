@@ -1,6 +1,7 @@
 package com.nullo.openrouterclient.di
 
 import android.app.Application
+import com.nullo.openrouterclient.di.modules.CoroutineScopeModule
 import com.nullo.openrouterclient.di.modules.DataModule
 import com.nullo.openrouterclient.di.modules.DatabaseModule
 import com.nullo.openrouterclient.di.modules.MarkwonModule
@@ -21,7 +22,8 @@ import dagger.Component
         SharedPreferencesModule::class,
         ViewModelModule::class,
         DataModule::class,
-        MarkwonModule::class
+        MarkwonModule::class,
+        CoroutineScopeModule::class
     ]
 )
 @ApplicationScope

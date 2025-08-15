@@ -6,11 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nullo.openrouterclient.databinding.FragmentSettingsBinding
 import com.nullo.openrouterclient.di.ViewModelFactory
-import com.nullo.openrouterclient.presentation.OpenRouterClientApp
 import com.nullo.openrouterclient.presentation.MainViewModel
+import com.nullo.openrouterclient.presentation.OpenRouterClientApp
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SettingsFragment : BottomSheetDialogFragment() {
@@ -51,15 +55,19 @@ class SettingsFragment : BottomSheetDialogFragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.apiKey.observe(viewLifecycleOwner) {
-            binding.etApiKey.apply {
-                setText(it)
-                requestFocus()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeUiState()
             }
         }
+    }
 
-        viewModel.messages.observe(viewLifecycleOwner) {
-            binding.btnClearChat.isEnabled = it.isNotEmpty()
+    private suspend fun observeUiState() {
+        viewModel.uiState.collect { state ->
+            with(binding) {
+                etApiKey.setText(state.apiKey)
+                btnClearChat.isEnabled = state.messages.isNotEmpty()
+            }
         }
     }
 

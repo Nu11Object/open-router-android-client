@@ -5,13 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nullo.openrouterclient.databinding.FragmentSelectModelBinding
 import com.nullo.openrouterclient.di.ViewModelFactory
 import com.nullo.openrouterclient.presentation.MainViewModel
 import com.nullo.openrouterclient.presentation.OpenRouterClientApp
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SelectModelFragment : BottomSheetDialogFragment() {
@@ -96,17 +101,18 @@ class SelectModelFragment : BottomSheetDialogFragment() {
     }
 
     private fun observeViewModel() {
-        with(viewModel) {
-            pinnedAiModels.observe(viewLifecycleOwner) {
-                pinnedAiModelsAdapter.submitList(it)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeUiState()
             }
+        }
+    }
 
-            filteredCloudAiModels.observe(viewLifecycleOwner) {
-                cloudAiModelsAdapter.submitList(it)
-                if (it.isNotEmpty()) {
-                    binding.pbCloudLoading.visibility = View.GONE
-                }
-            }
+    private suspend fun observeUiState() {
+        viewModel.uiState.collect { state ->
+            binding.pbCloudLoading.isVisible = state.loadingCloudAiModels
+            pinnedAiModelsAdapter.submitList(state.pinnedAiModels)
+            cloudAiModelsAdapter.submitList(state.cloudAiModels)
         }
     }
 

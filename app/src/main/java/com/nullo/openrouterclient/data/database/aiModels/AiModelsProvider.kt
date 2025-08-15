@@ -42,4 +42,6 @@ class AiModelsProvider @Inject constructor() {
             freeToUse = true,
         ),
     )
+
+    fun getDefaultModel() = defaultModels.first()
 }

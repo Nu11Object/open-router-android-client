@@ -1,15 +1,15 @@
 package com.nullo.openrouterclient.domain.repositories
 
-import androidx.lifecycle.LiveData
 import com.nullo.openrouterclient.domain.entities.AiModel
+import kotlinx.coroutines.flow.StateFlow
 
 interface SettingsRepository {
 
-    val currentModel: LiveData<AiModel>
+    val currentModel: StateFlow<AiModel>
 
-    val contextEnabled: LiveData<Boolean>
+    val contextEnabled: StateFlow<Boolean>
 
-    val apiKey: LiveData<String>
+    val apiKey: StateFlow<String>
 
     fun selectAiModel(aiModel: AiModel)
 

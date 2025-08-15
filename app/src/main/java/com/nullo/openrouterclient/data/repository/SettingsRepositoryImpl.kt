@@ -2,69 +2,51 @@ package com.nullo.openrouterclient.data.repository
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.nullo.openrouterclient.data.database.aiModels.AiModelsDao
+import com.nullo.openrouterclient.data.database.aiModels.AiModelsProvider
 import com.nullo.openrouterclient.data.mapper.AiModelMapper
 import com.nullo.openrouterclient.di.qualifiers.ApiKeyQualifier
 import com.nullo.openrouterclient.di.qualifiers.SettingsQualifier
 import com.nullo.openrouterclient.domain.entities.AiModel
 import com.nullo.openrouterclient.domain.repositories.SettingsRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class SettingsRepositoryImpl @Inject constructor(
-    private val aiModelsDao: AiModelsDao,
     private val aiModelMapper: AiModelMapper,
+    private val aiModelsProvider: AiModelsProvider,
     @param:SettingsQualifier private val settingsPrefs: SharedPreferences,
     @param:ApiKeyQualifier private val apiKeyPrefs: SharedPreferences,
     private val gson: Gson,
 ) : SettingsRepository {
 
-    private val _currentModel = MutableLiveData<AiModel>()
-    override val currentModel: LiveData<AiModel>
-        get() = _currentModel
+    private val _currentModel = MutableStateFlow(getSavedAiModelOrDefault())
+    override val currentModel = _currentModel.asStateFlow()
 
-    private val _contextEnabled = MutableLiveData<Boolean>()
-    override val contextEnabled: LiveData<Boolean>
-        get() = _contextEnabled
+    private val _contextEnabled = MutableStateFlow(getContextMode())
+    override val contextEnabled = _contextEnabled.asStateFlow()
 
-    private val _apiKey = MutableLiveData<String>()
-    override val apiKey: LiveData<String>
-        get() = _apiKey
+    private val _apiKey = MutableStateFlow(getApiKey())
+    override val apiKey = _apiKey.asStateFlow()
 
-    init {
-        loadModel()
-        loadContextMode()
-        loadApiKey()
-    }
-
-    private fun loadModel() {
+    private fun getSavedAiModelOrDefault(): AiModel {
         val modelAsString = settingsPrefs.getString(KEY_AI_MODEL, null)
-        CoroutineScope(Dispatchers.IO).launch {
-            _currentModel.postValue(
-                modelAsString?.let {
-                    gson.fromJson(it, AiModel::class.java) ?: getDefaultModel()
-                } ?: getDefaultModel()
-            )
-        }
+        return runCatching {
+            gson.fromJson(modelAsString, AiModel::class.java)
+        }.getOrNull() ?: getDefaultModel()
     }
 
-    private fun loadContextMode() {
-        val contextEnabled = settingsPrefs.getBoolean(KEY_CONTEXT_ENABLED, false)
-        _contextEnabled.value = contextEnabled
+    private fun getContextMode(): Boolean {
+        return settingsPrefs.getBoolean(KEY_CONTEXT_ENABLED, false)
     }
 
-    private fun loadApiKey() {
-        val apiKey = apiKeyPrefs.getString(KEY_API_KEY, API_KEY_EMPTY) ?: API_KEY_EMPTY
-        _apiKey.value = apiKey
+    private fun getApiKey(): String {
+        return apiKeyPrefs.getString(KEY_API_KEY, API_KEY_EMPTY) ?: API_KEY_EMPTY
     }
 
-    private suspend fun getDefaultModel(): AiModel {
-        return aiModelMapper.mapDbEntityToAiModel(aiModelsDao.getDefaultViewModel())
+    private fun getDefaultModel(): AiModel {
+        return aiModelMapper.mapDbEntityToAiModel(aiModelsProvider.getDefaultModel())
     }
 
     override fun selectAiModel(aiModel: AiModel) {
@@ -73,9 +55,7 @@ class SettingsRepositoryImpl @Inject constructor(
     }
 
     override fun toggleContextMode() {
-        val currentValue = _contextEnabled.value ?: false
-        val newValue = !currentValue
-
+        val newValue = !_contextEnabled.value
         _contextEnabled.value = newValue
         saveContextMode(newValue)
     }

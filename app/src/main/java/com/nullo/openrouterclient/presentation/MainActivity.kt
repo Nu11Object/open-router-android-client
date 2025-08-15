@@ -3,7 +3,6 @@ package com.nullo.openrouterclient.presentation
 import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.os.Bundle
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
@@ -13,15 +12,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nullo.openrouterclient.R
 import com.nullo.openrouterclient.databinding.ActivityMainBinding
 import com.nullo.openrouterclient.di.ViewModelFactory
+import com.nullo.openrouterclient.domain.entities.AiModel
+import com.nullo.openrouterclient.domain.entities.Message
+import com.nullo.openrouterclient.presentation.UiEvent.ShowError
+import com.nullo.openrouterclient.presentation.UiEvent.ShowMessage
 import com.nullo.openrouterclient.presentation.aimodels.SelectModelFragment
 import com.nullo.openrouterclient.presentation.chat.MessagesAdapter
 import com.nullo.openrouterclient.presentation.chat.SpacingItemDecorator
 import com.nullo.openrouterclient.presentation.settings.SettingsFragment
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -77,35 +85,47 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.messages.observe(this) {
-            binding.groupAppHeadlines.visibility = if (it.isNotEmpty()) View.GONE else View.VISIBLE
-            messagesAdapter.submitList(it)
-        }
-
-        viewModel.currentModel.observe(this) { model ->
-            binding.apply {
-                tvModelName.text = model.name
-                displayReasoningSupport(model.supportsReasoning)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { observeUiState() }
+                launch { observeUiEvents() }
             }
         }
+    }
 
-        viewModel.error.observe(this) {
-            showError(
-                ContextCompat.getString(this, it.stringRes)
-            )
+    private suspend fun observeUiState() {
+        viewModel.uiState.collect { state ->
+            updateMessages(state.messages)
+            updateCurrentAiModel(state.currentAiModel)
+            updateContextButton(state.contextEnabled)
+            binding.btnSendQuery.isEnabled = !state.waitingForResponse
         }
+    }
 
-        viewModel.contextEnabled.observe(this) {
-            updateContextButton(it)
+    private fun updateMessages(messages: List<Message>) {
+        binding.groupAppHeadlines.isVisible = messages.isEmpty()
+        messagesAdapter.submitList(messages) {
+            if (messages.isNotEmpty()) {
+                binding.rcChat.smoothScrollToPosition(messages.size - 1)
+            }
         }
+    }
 
-        viewModel.loading.observe(this) {
-            binding.btnSendQuery.isEnabled = !it
+    private fun updateCurrentAiModel(aiModel: AiModel?) {
+        aiModel?.let {
+            with(binding) {
+                tvModelName.text = it.name
+                displayReasoningSupport(it.supportsReasoning)
+            }
         }
+    }
 
-        viewModel.userMessageStringRes.observe(this) {
-            val message = ContextCompat.getString(this, it)
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    private suspend fun observeUiEvents() {
+        viewModel.uiEvents.collect { event ->
+            when (event) {
+                is ShowMessage -> showMessage(getString(event.messageStringRes))
+                is ShowError -> showMessage(getString(event.error.stringRes))
+            }
         }
     }
 
@@ -146,8 +166,8 @@ class MainActivity : AppCompatActivity() {
         bottomSheetDialog.show(supportFragmentManager, SettingsFragment.Companion.TAG)
     }
 
-    private fun showError(error: String) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+    private fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun displayReasoningSupport(supportsReasoning: Boolean) {
