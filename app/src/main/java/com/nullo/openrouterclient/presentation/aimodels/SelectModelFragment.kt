@@ -1,6 +1,5 @@
 package com.nullo.openrouterclient.presentation.aimodels
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,24 +12,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nullo.openrouterclient.databinding.FragmentSelectModelBinding
-import com.nullo.openrouterclient.di.ViewModelFactory
 import com.nullo.openrouterclient.presentation.MainViewModel
-import com.nullo.openrouterclient.presentation.OpenRouterClientApp
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class SelectModelFragment : BottomSheetDialogFragment() {
 
-    private val component by lazy {
-        (requireActivity().application as OpenRouterClientApp).component
-    }
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModel: MainViewModel by activityViewModels {
-        viewModelFactory
-    }
+    private val viewModel: MainViewModel by activityViewModels()
 
     private var _binding: FragmentSelectModelBinding? = null
     private val binding
@@ -40,11 +27,6 @@ class SelectModelFragment : BottomSheetDialogFragment() {
 
     private lateinit var pinnedAiModelsAdapter: AiModelsAdapter
     private lateinit var cloudAiModelsAdapter: AiModelsAdapter
-
-    override fun onAttach(context: Context) {
-        component.inject(this)
-        super.onAttach(context)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

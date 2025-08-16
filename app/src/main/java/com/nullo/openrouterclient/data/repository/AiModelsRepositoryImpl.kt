@@ -4,11 +4,10 @@ import com.nullo.openrouterclient.data.database.aiModels.AiModelsDao
 import com.nullo.openrouterclient.data.mapper.AiModelMapper
 import com.nullo.openrouterclient.data.mapper.ApiResponseMapper
 import com.nullo.openrouterclient.data.network.ApiService
+import com.nullo.openrouterclient.di.qualifiers.ApplicationScopeQualifier
 import com.nullo.openrouterclient.domain.entities.AiModel
 import com.nullo.openrouterclient.domain.repositories.AiModelsRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -20,7 +19,7 @@ class AiModelsRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val aiModelMapper: AiModelMapper,
     private val apiResponseMapper: ApiResponseMapper,
-    private val coroutineScope: CoroutineScope,
+    @param:ApplicationScopeQualifier private val coroutineScope: CoroutineScope,
 ) : AiModelsRepository {
 
     override val pinnedAiModels: StateFlow<List<AiModel>> = aiModelsDao.getModels()
