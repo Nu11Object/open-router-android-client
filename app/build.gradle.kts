@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
     id("com.google.devtools.ksp")
-    id("kotlin-kapt")
 }
 
 android {
@@ -55,9 +55,9 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
-    // Dagger2
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     // Coroutines
     implementation(libs.androidx.lifecycle.process)
