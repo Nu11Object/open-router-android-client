@@ -1,4 +1,5 @@
-![Logo](./assets/logo.png)
+**English** | [Русский](README.ru.md)
+![Logo](./assets/en/logo.png)
 
 ![Education Project](https://img.shields.io/badge/education_project-8A2BE2.svg?style=for-the-badge&logoColor=white)
 ![Android](https://img.shields.io/badge/Android_/_views-%237F52FF?style=for-the-badge&logo=android&logoColor=white)
@@ -7,57 +8,56 @@
 ![Hilt](https://img.shields.io/badge/hilt-%237F52FF.svg?style=for-the-badge&logoColor=white)
 ![Flow](https://img.shields.io/badge/Flow-%237F52FF.svg?style=for-the-badge&logoColor=white)
 
-**OpenRouter::client** — Android-приложение для общения с нейросетями через сервис [OpenRouter.ai](https://openrouter.ai/). <br>Проект разработан в **учебных целях** для закрепления  навыков.
+**OpenRouter::client** — Android application for communicating with neural networks via the [OpenRouter.ai](https://openrouter.ai/) service. <br>The project was developed **for educational purposes** to strengthen skills.
 
-## Возможности 
+## Features
 
-- Отправка запросов в нейросеть через OpenRouter API
-- Выбор и сохранение в избранное AI-моделей из каталога OpenRouter.
-- Переключение режима контекста (использование истории чата в запросе)
-- Сохранение истории сообщений в виде чата
-- Использование кастомного API-ключа
-- Сброс истории чата
+* Sending requests to a neural network through the OpenRouter API
+* Selecting and saving favorite AI models from the OpenRouter catalog
+* Switching context mode (using chat history in the request)
+* Saving message history as a chat
+* Using a custom API key
+* Clearing chat history
 
-## Скриншоты
+## Screenshots
 
-![Screenshots](./assets/screenshots.png)
-![Screenshots of messages](./assets/screenshots_messages.png)
+![Screenshots](./assets/en/screenshots.png)
+![Screenshots of messages](./assets/en/screenshots_messages.png)
 
-## Планы по развитию проекта
+## Architecture
 
-Проект будет совершенствоваться по мере моего профессионального роста. В будущем планируются как точечные улучшения и исправления, так и внедрение современных подходов и технологий.
+The project is built according to the principles of **Clean Architecture** and divided into layers:
 
-## Архитектура
+* **Presentation** (UI, Activity, Fragments, ViewModels)
+* **Domain** (UseCases, Entities, Repository interfaces)
+* **Data** (Room, Retrofit, Repositories, Mappers)
+* **DI** (Component, Modules, Scope, Qualifiers)
 
-Проект построен по принципам **Clean Architecture** и разделён на слои:
+The MVVM pattern is implemented (ViewModel + Flow).<br>
+Dependency Injection is handled via Hilt.
 
-- **Presentation** (UI, Activity, Fragments, ViewModels)
-- **Domain** (UseCases, Entities, Repository interfaces)
-- **Data** (Room, Retrofit, Repositories, Mappers)
-- **DI** (Component, Modules, Scope, Qualifiers)
+## Tech Stack
 
-Реализован MVVM-паттерн (ViewModel + Flow).<br>
-Dependency Injection через Hilt.
+* **Kotlin**, **Android SDK**, **Coroutines**, **Flow**, **ViewBinding**
+* **Room** (storing chat history and favorite AI models)
+* **Retrofit2** (network requests to the OpenRouter API)
+* **Hilt** (dependency injection)
+* **Markwon** (markdown rendering)
 
-## Технологический стек
+## Build and Run
 
-- **Kotlin**, **Android SDK**, **Coroutines**, **Flow**, **ViewBinding**
-- **Room** (хранение истории чата и избранных AI-моделей)
-- **Retrofit2** (сетевые запросы к OpenRouter API)
-- **Hilt** (внедрение зависимостей)
-- **Markwon** (рендеринг markdown)
+1. Clone the repository:
 
-## Сборка и запуск
-
-1. Склонируйте репозиторий:
 ```bash
   git clone git@github.com:Nu11Object/open-router-android-client.git
   cd open-router-android-client
 ```
-2. Соберите проект и запустите приложение.
-3. Добавьте свой OpenRouter API-ключ:
-   - Перейдите на сайт [OpenRouter.ai](https://openrouter.ai/) и зарегистрируйтесь.
-   - Создайте новый API-ключ в [настройках профиля](https://openrouter.ai/settings/keys).
-   - Укажите его в настройках приложения:
 
-![Screenshot API key](./assets/screenshot_api_key.png)
+2. Build the project and run the application.
+3. Add your OpenRouter API key:
+
+   * Go to [OpenRouter.ai](https://openrouter.ai/) and register.
+   * Create a new API key in [profile settings](https://openrouter.ai/settings/keys).
+   * Specify it in the application settings:
+
+![Screenshot API key](./assets/en/screenshot_api_key.png)
