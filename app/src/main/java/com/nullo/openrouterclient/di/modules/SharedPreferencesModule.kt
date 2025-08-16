@@ -4,17 +4,20 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.nullo.openrouterclient.di.ApplicationScope
 import com.nullo.openrouterclient.di.qualifiers.ApiKeyQualifier
 import com.nullo.openrouterclient.di.qualifiers.SettingsQualifier
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class SharedPreferencesModule {
 
     @Provides
-    @ApplicationScope
+    @Singleton
     @SettingsQualifier
     fun provideSettingsSharedPreferences(
         application: Application
@@ -23,7 +26,7 @@ class SharedPreferencesModule {
     }
 
     @Provides
-    @ApplicationScope
+    @Singleton
     @ApiKeyQualifier
     fun provideApiKeySharedPreferences(
         application: Application
@@ -33,14 +36,14 @@ class SharedPreferencesModule {
     }
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideGson(): Gson {
         return Gson()
     }
 
     companion object {
 
-        const val NAME_SETTINGS_PREFS = "settings_prefs"
-        const val NAME_APIKEY_PREFS = "apikey_prefs"
+        private const val NAME_SETTINGS_PREFS = "settings_prefs"
+        private const val NAME_APIKEY_PREFS = "apikey_prefs"
     }
 }

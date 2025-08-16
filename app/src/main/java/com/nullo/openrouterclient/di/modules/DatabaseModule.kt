@@ -5,35 +5,39 @@ import androidx.room.Room
 import com.nullo.openrouterclient.data.database.AppDatabase
 import com.nullo.openrouterclient.data.database.aiModels.AiModelsDao
 import com.nullo.openrouterclient.data.database.chat.ChatDao
-import com.nullo.openrouterclient.di.ApplicationScope
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class DatabaseModule {
 
-    private val databaseName = "AiModels.db"
-
     @Provides
-    @ApplicationScope
-    fun provideAiModelsDatabase(application: Application): AppDatabase {
+    @Singleton
+    fun provideAppDatabase(application: Application): AppDatabase {
         return Room.databaseBuilder(
             application,
             AppDatabase::class.java,
-            databaseName
-        ).fallbackToDestructiveMigration(true)
-            .build()
+            DATABASE_NAME
+        ).build()
     }
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideAiModelsDao(database: AppDatabase): AiModelsDao {
         return database.aiModelsDao()
     }
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideChatDao(database: AppDatabase): ChatDao {
         return database.chatDao()
+    }
+
+    companion object {
+        private const val DATABASE_NAME = "openrouter_client.db"
     }
 }

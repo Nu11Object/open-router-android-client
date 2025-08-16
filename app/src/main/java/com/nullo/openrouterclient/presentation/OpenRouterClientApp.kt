@@ -3,10 +3,11 @@ package com.nullo.openrouterclient.presentation
 import android.app.Application
 import com.nullo.openrouterclient.data.database.aiModels.AiModelsDao
 import com.nullo.openrouterclient.data.database.aiModels.AiModelsProvider
-import com.nullo.openrouterclient.di.DaggerApplicationComponent
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+@HiltAndroidApp
 class OpenRouterClientApp : Application() {
 
     @Inject
@@ -15,12 +16,7 @@ class OpenRouterClientApp : Application() {
     @Inject
     lateinit var aiModelsProvider: AiModelsProvider
 
-    val component by lazy {
-        DaggerApplicationComponent.factory().create(this)
-    }
-
     override fun onCreate() {
-        component.inject(this)
         super.onCreate()
         initializeDatabase()
     }

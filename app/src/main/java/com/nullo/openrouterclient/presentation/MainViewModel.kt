@@ -20,6 +20,7 @@ import com.nullo.openrouterclient.domain.usecases.settings.GetApiKeyUseCase
 import com.nullo.openrouterclient.domain.usecases.settings.GetContextEnabledUseCase
 import com.nullo.openrouterclient.domain.usecases.settings.SetApiKeyUseCase
 import com.nullo.openrouterclient.domain.usecases.settings.ToggleContextModeUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class MainViewModel @Inject constructor(
     private val handleLoadingFailureUseCase: HandleLoadingFailureUseCase,
     private val getChatMessagesUseCase: GetChatMessagesUseCase,

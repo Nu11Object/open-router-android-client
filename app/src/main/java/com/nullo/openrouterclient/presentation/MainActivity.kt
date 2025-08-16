@@ -8,19 +8,18 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nullo.openrouterclient.R
 import com.nullo.openrouterclient.databinding.ActivityMainBinding
-import com.nullo.openrouterclient.di.ViewModelFactory
 import com.nullo.openrouterclient.domain.entities.AiModel
 import com.nullo.openrouterclient.domain.entities.Message
 import com.nullo.openrouterclient.presentation.UiEvent.ShowError
@@ -29,17 +28,12 @@ import com.nullo.openrouterclient.presentation.aimodels.SelectModelFragment
 import com.nullo.openrouterclient.presentation.chat.MessagesAdapter
 import com.nullo.openrouterclient.presentation.chat.SpacingItemDecorator
 import com.nullo.openrouterclient.presentation.settings.SettingsFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-    private val component by lazy {
-        (application as OpenRouterClientApp).component
-    }
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
     lateinit var messagesAdapter: MessagesAdapter
@@ -48,12 +42,9 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-    }
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        component.inject(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)

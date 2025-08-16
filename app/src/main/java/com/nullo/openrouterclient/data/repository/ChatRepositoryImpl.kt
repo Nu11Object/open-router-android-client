@@ -7,6 +7,7 @@ import com.nullo.openrouterclient.data.mapper.ApiResponseMapper
 import com.nullo.openrouterclient.data.mapper.MessageMapper
 import com.nullo.openrouterclient.data.network.ApiService
 import com.nullo.openrouterclient.data.network.dto.chat.RequestBodyDto
+import com.nullo.openrouterclient.di.qualifiers.ApplicationScopeQualifier
 import com.nullo.openrouterclient.domain.entities.AiModel
 import com.nullo.openrouterclient.domain.entities.ChatResponseResult
 import com.nullo.openrouterclient.domain.entities.Message
@@ -26,7 +27,7 @@ class ChatRepositoryImpl @Inject constructor(
     private val errorResponseProvider: ErrorResponseProvider,
     private val messageMapper: MessageMapper,
     private val apiResponseMapper: ApiResponseMapper,
-    private val coroutineScope: CoroutineScope,
+    @param:ApplicationScopeQualifier private val coroutineScope: CoroutineScope,
 ) : ChatRepository {
 
     override val messages: StateFlow<List<Message>> = chatDao.getMessages()
