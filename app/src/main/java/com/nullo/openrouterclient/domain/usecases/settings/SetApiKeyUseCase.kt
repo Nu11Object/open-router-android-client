@@ -8,6 +8,11 @@ class SetApiKeyUseCase @Inject constructor(
 ) {
 
     operator fun invoke(apiKey: String) {
-        repository.setApiKey(apiKey)
+        val key = apiKey.takeIf { it.startsWith(PREFIX_BEARER) } ?: (PREFIX_BEARER + apiKey)
+        repository.setApiKey(key)
+    }
+
+    companion object {
+        private const val PREFIX_BEARER = "Bearer "
     }
 }
