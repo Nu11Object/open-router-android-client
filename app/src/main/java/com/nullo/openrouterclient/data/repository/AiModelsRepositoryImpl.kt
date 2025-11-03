@@ -8,6 +8,7 @@ import com.nullo.openrouterclient.di.qualifiers.ApplicationScopeQualifier
 import com.nullo.openrouterclient.domain.entities.AiModel
 import com.nullo.openrouterclient.domain.repositories.AiModelsRepository
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -19,18 +20,12 @@ class AiModelsRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val aiModelMapper: AiModelMapper,
     private val apiResponseMapper: ApiResponseMapper,
-    @param:ApplicationScopeQualifier private val coroutineScope: CoroutineScope,
 ) : AiModelsRepository {
 
-    override val pinnedAiModels: StateFlow<List<AiModel>> = aiModelsDao.getModels()
+    override val pinnedAiModels: Flow<List<AiModel>> = aiModelsDao.getModels()
         .map { entity ->
             entity.map { aiModelMapper.mapDbEntityToAiModel(it) }
         }
-        .stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.Lazily,
-            initialValue = emptyList()
-        )
 
     override suspend fun getCloudAiModels(): List<AiModel> {
         val response = apiService.getModels()

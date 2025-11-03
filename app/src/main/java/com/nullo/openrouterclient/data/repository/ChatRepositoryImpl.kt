@@ -7,17 +7,13 @@ import com.nullo.openrouterclient.data.mapper.ApiResponseMapper
 import com.nullo.openrouterclient.data.mapper.MessageMapper
 import com.nullo.openrouterclient.data.network.ApiService
 import com.nullo.openrouterclient.data.network.dto.chat.RequestBodyDto
-import com.nullo.openrouterclient.di.qualifiers.ApplicationScopeQualifier
 import com.nullo.openrouterclient.domain.entities.AiModel
 import com.nullo.openrouterclient.domain.entities.ChatResponseResult
 import com.nullo.openrouterclient.domain.entities.Message
 import com.nullo.openrouterclient.domain.entities.Message.Query
 import com.nullo.openrouterclient.domain.repositories.ChatRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 class ChatRepositoryImpl @Inject constructor(
@@ -27,18 +23,12 @@ class ChatRepositoryImpl @Inject constructor(
     private val errorResponseProvider: ErrorResponseProvider,
     private val messageMapper: MessageMapper,
     private val apiResponseMapper: ApiResponseMapper,
-    @param:ApplicationScopeQualifier private val coroutineScope: CoroutineScope,
 ) : ChatRepository {
 
-    override val messages: StateFlow<List<Message>> = chatDao.getMessages()
+    override val messages: Flow<List<Message>> = chatDao.getMessages()
         .map { entityList ->
             entityList.map { messageMapper.mapDbEntityToMessage(it) }
         }
-        .stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.Lazily,
-            initialValue = emptyList()
-        )
 
     override suspend fun addLoadingMessage(): Long {
         val loadingMessage = messageDbEntityProvider.createLoadingMessage()
