@@ -4,7 +4,8 @@ import com.nullo.openrouterclient.data.ErrorResponseProvider
 import com.nullo.openrouterclient.data.database.chat.ChatDao
 import com.nullo.openrouterclient.data.database.chat.MessageDbEntityProvider
 import com.nullo.openrouterclient.data.mapper.ApiResponseMapper
-import com.nullo.openrouterclient.data.mapper.MessageMapper
+import com.nullo.openrouterclient.data.mapper.toDto
+import com.nullo.openrouterclient.data.mapper.toMessage
 import com.nullo.openrouterclient.data.network.ApiService
 import com.nullo.openrouterclient.data.network.dto.chat.RequestBodyDto
 import com.nullo.openrouterclient.domain.entities.AiModel
@@ -21,14 +22,12 @@ class ChatRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val messageDbEntityProvider: MessageDbEntityProvider,
     private val errorResponseProvider: ErrorResponseProvider,
-    private val messageMapper: MessageMapper,
     private val apiResponseMapper: ApiResponseMapper,
 ) : ChatRepository {
 
-    override val messages: Flow<List<Message>> = chatDao.getMessages()
-        .map { entityList ->
-            entityList.map { messageMapper.mapDbEntityToMessage(it) }
-        }
+    override val messages: Flow<List<Message>> = chatDao
+        .getMessages()
+        .map { dbEntities -> dbEntities.map { it.toMessage() } }
 
     override suspend fun addLoadingMessage(): Long {
         val loadingMessage = messageDbEntityProvider.createLoadingMessage()
@@ -89,8 +88,8 @@ class ChatRepositoryImpl @Inject constructor(
         apiKey: String
     ): ChatResponseResult {
         val requestWithContext = buildList {
-            context?.let { addAll(messageMapper.mapMessagesToDto(it)) }
-            add(messageMapper.mapQueryToDto(query))
+            context?.let { addAll(it.toDto()) }
+            add(query.toDto())
         }
 
         val requestBodyDto = RequestBodyDto(model.queryName, requestWithContext)
