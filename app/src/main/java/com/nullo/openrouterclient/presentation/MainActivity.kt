@@ -22,6 +22,7 @@ import com.nullo.openrouterclient.R
 import com.nullo.openrouterclient.databinding.ActivityMainBinding
 import com.nullo.openrouterclient.domain.entities.AiModel
 import com.nullo.openrouterclient.domain.entities.Message
+import com.nullo.openrouterclient.presentation.UiEvent.ClearInput
 import com.nullo.openrouterclient.presentation.UiEvent.ShowError
 import com.nullo.openrouterclient.presentation.UiEvent.ShowMessage
 import com.nullo.openrouterclient.presentation.aimodels.SelectModelFragment
@@ -116,6 +117,7 @@ class MainActivity : AppCompatActivity() {
             when (event) {
                 is ShowMessage -> showMessage(getString(event.messageStringRes))
                 is ShowError -> showMessage(getString(event.error.stringRes))
+                is ClearInput -> clearInput(binding.etUserInput)
             }
         }
     }
@@ -127,7 +129,6 @@ class MainActivity : AppCompatActivity() {
             }
             btnSendQuery.setOnClickListener {
                 viewModel.sendQuery(etUserInput.text.toString().trim())
-                clearInput(etUserInput)
             }
             btnSelectModel.setOnClickListener {
                 launchModelsMenu()

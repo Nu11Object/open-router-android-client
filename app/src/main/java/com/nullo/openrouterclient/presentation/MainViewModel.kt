@@ -81,6 +81,7 @@ class MainViewModel @Inject constructor(
             }
 
             _uiState.value = _uiState.value.copy(waitingForResponse = true)
+            _uiEvents.emit(UiEvent.ClearInput)
 
             val context = if (_uiState.value.contextEnabled) _uiState.value.messages else null
             try {
@@ -120,7 +121,7 @@ class MainViewModel @Inject constructor(
                 return@launch
             }
             setApiKeyUseCase(apiKey)
-            emitUiMessage(R.string.saved)
+            _uiEvents.emit(UiEvent.ShowMessage(R.string.saved))
         }
     }
 
@@ -198,10 +199,6 @@ class MainViewModel @Inject constructor(
 
     private suspend fun emitError(errorType: ErrorType) {
         _uiEvents.emit(UiEvent.ShowError(errorType))
-    }
-
-    private suspend fun emitUiMessage(@StringRes messageRes: Int) {
-        _uiEvents.emit(UiEvent.ShowMessage(messageRes))
     }
 
     companion object {
