@@ -18,6 +18,8 @@ data class AiModelDto(
     val pricing: PricingDto,
     @SerializedName("supported_parameters")
     val supportedParameters: List<String>?,
+    @SerializedName("architecture")
+    val architectureDto: ArchitectureDto,
 )
 
 data class PricingDto(
@@ -27,4 +29,9 @@ data class PricingDto(
     val completion: String,
     @SerializedName("request")
     val request: String,
+)
+
+data class ArchitectureDto(
+    @SerializedName("modality")
+    val modality: String,
 )

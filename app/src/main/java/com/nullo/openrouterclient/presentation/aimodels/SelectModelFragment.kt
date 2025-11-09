@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
@@ -11,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.nullo.openrouterclient.R
 import com.nullo.openrouterclient.databinding.FragmentSelectModelBinding
 import com.nullo.openrouterclient.presentation.MainViewModel
 import kotlinx.coroutines.launch
@@ -100,21 +102,19 @@ class SelectModelFragment : BottomSheetDialogFragment() {
 
     private fun setupClickListeners() {
         binding.btnBrowseModels.setOnClickListener {
-            hideCloudModelsPlaceholders()
-            showCloudModelsSection()
+            enableCloudModelsSection()
             viewModel.browseCloudModels()
         }
     }
 
-    private fun hideCloudModelsPlaceholders() {
+    private fun enableCloudModelsSection() {
         with(binding) {
-            tvAvailableModelsDescription.visibility = View.GONE
+            tvAvailableModelsDescription.text = ContextCompat.getString(
+                requireContext(),
+                R.string.available_models_modality_hint,
+            )
             btnBrowseModels.visibility = View.GONE
-        }
-    }
 
-    private fun showCloudModelsSection() {
-        with(binding) {
             tilModelName.visibility = View.VISIBLE
             rcCloudModels.visibility = View.VISIBLE
             pbCloudLoading.visibility = View.VISIBLE

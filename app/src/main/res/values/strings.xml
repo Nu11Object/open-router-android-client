@@ -31,6 +31,7 @@
     <string name="pinned_models_placeholder">Pin your favorites to keep them at the top – they\'ll save locally for instant access anytime!</string>
     <string name="available_models_header">Available models</string>
     <string name="available_models_description">Tap below to explore AI models from OpenRouter.</string>
+    <string name="available_models_modality_hint">Currently supporting text-to-text models only.</string>
     <string name="browse_models">Browse models</string>
     <string name="model_name">Model name</string>
     <string name="free">Free</string>

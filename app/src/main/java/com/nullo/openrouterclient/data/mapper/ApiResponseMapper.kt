@@ -3,8 +3,6 @@ package com.nullo.openrouterclient.data.mapper
 import com.google.gson.Gson
 import com.nullo.openrouterclient.data.Constants.UNDEFINED_ID
 import com.nullo.openrouterclient.data.ErrorResponseProvider
-import com.nullo.openrouterclient.data.mapper.ApiResponseMapper.Companion.KEY_SUPPORTS_REASONING
-import com.nullo.openrouterclient.data.mapper.ApiResponseMapper.Companion.PRICE_IF_FREE
 import com.nullo.openrouterclient.data.network.dto.chat.ChatResponseDto
 import com.nullo.openrouterclient.data.network.dto.chat.ErrorDto
 import com.nullo.openrouterclient.data.network.dto.chat.ErrorResponseDto
@@ -16,19 +14,25 @@ import com.nullo.openrouterclient.domain.entities.Message.AiResponse
 import retrofit2.Response
 import javax.inject.Inject
 
-fun AiModelsResponseDto.toAiModels(): List<AiModel> = aiModels.map {
-    val supportsReasoning = it.supportedParameters?.contains(KEY_SUPPORTS_REASONING)
-    val freeToUse = with(it.pricing) {
-        prompt == PRICE_IF_FREE && request == PRICE_IF_FREE && completion == PRICE_IF_FREE
+private const val MODALITY_TEXT_TO_TEXT = "text->text"
+private const val PRICE_IF_FREE = "0"
+private const val KEY_SUPPORTS_REASONING = "reasoning"
+
+fun AiModelsResponseDto.toAiModels(): List<AiModel> = aiModels
+    .filter { it.architectureDto.modality == MODALITY_TEXT_TO_TEXT }
+    .map {
+        val supportsReasoning = it.supportedParameters?.contains(KEY_SUPPORTS_REASONING)
+        val freeToUse = with(it.pricing) {
+            prompt == PRICE_IF_FREE && request == PRICE_IF_FREE && completion == PRICE_IF_FREE
+        }
+        AiModel(
+            id = UNDEFINED_ID,
+            name = it.name,
+            queryName = it.queryName,
+            supportsReasoning = supportsReasoning ?: false,
+            freeToUse = freeToUse
+        )
     }
-    AiModel(
-        id = UNDEFINED_ID,
-        name = it.name,
-        queryName = it.queryName,
-        supportsReasoning = supportsReasoning ?: false,
-        freeToUse = freeToUse
-    )
-}
 
 fun ErrorResponseDto.toDisplayString(): String = with(error) {
     buildString {
@@ -74,11 +78,5 @@ class ApiResponseMapper @Inject constructor(
                 errorResponseDto.toDisplayString()
             )
         }
-    }
-
-    companion object {
-
-        const val KEY_SUPPORTS_REASONING = "reasoning"
-        const val PRICE_IF_FREE = "0"
     }
 }
