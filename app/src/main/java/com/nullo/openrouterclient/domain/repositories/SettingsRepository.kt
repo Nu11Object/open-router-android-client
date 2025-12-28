@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface SettingsRepository {
 
-    val currentModel: StateFlow<AiModel>
+    val currentModel: StateFlow<AiModel?>
 
     val contextEnabled: StateFlow<Boolean>
 

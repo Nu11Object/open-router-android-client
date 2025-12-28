@@ -14,7 +14,7 @@
     <string name="error_blank_input">Query can not be blank.</string>
     <string name="error_blank_api_key">API key can\'t be blank.</string>
     <string name="error_no_api_key">Missing API key.\nPlease add it in settings.</string>
-    <string name="error_missing_model">Model is missing.</string>
+    <string name="error_missing_model">Please select a model.</string>
     <string name="error_missing_api_key">Api key is missing.</string>
     <string name="error_network">Something went wrong. Please check your internet connection and try again.</string>
     <string name="error_cancelled">The request was cancelled because the app was closed.</string>
@@ -40,4 +40,6 @@
     <string name="chat">Chat settings</string>
     <string name="saved">Saved!</string>
     <string name="answer">Answer:</string>
+    <string name="model_not_selected">No model selected</string>
+    <string name="model_select_hint">Pick one from the catalog</string>
 </resources>

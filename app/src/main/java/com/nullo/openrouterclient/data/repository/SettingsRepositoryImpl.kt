@@ -3,8 +3,6 @@ package com.nullo.openrouterclient.data.repository
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.gson.Gson
-import com.nullo.openrouterclient.data.database.aiModels.AiModelsProvider
-import com.nullo.openrouterclient.data.mapper.toAiModel
 import com.nullo.openrouterclient.di.qualifiers.ApiKeyQualifier
 import com.nullo.openrouterclient.di.qualifiers.SettingsQualifier
 import com.nullo.openrouterclient.domain.entities.AiModel
@@ -14,13 +12,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class SettingsRepositoryImpl @Inject constructor(
-    private val aiModelsProvider: AiModelsProvider,
     @param:SettingsQualifier private val settingsPrefs: SharedPreferences,
     @param:ApiKeyQualifier private val apiKeyPrefs: SharedPreferences,
     private val gson: Gson,
 ) : SettingsRepository {
 
-    private val _currentModel = MutableStateFlow(getSavedAiModelOrDefault())
+    private val _currentModel = MutableStateFlow(getSavedAiModel())
     override val currentModel = _currentModel.asStateFlow()
 
     private val _contextEnabled = MutableStateFlow(getContextMode())
@@ -29,11 +26,11 @@ class SettingsRepositoryImpl @Inject constructor(
     private val _apiKey = MutableStateFlow(getApiKey())
     override val apiKey = _apiKey.asStateFlow()
 
-    private fun getSavedAiModelOrDefault(): AiModel {
+    private fun getSavedAiModel(): AiModel? {
         val modelAsString = settingsPrefs.getString(KEY_AI_MODEL, null)
         return runCatching {
             gson.fromJson(modelAsString, AiModel::class.java)
-        }.getOrNull() ?: getDefaultModel()
+        }.getOrNull()
     }
 
     private fun getContextMode(): Boolean {
@@ -42,10 +39,6 @@ class SettingsRepositoryImpl @Inject constructor(
 
     private fun getApiKey(): String {
         return apiKeyPrefs.getString(KEY_API_KEY, API_KEY_EMPTY) ?: API_KEY_EMPTY
-    }
-
-    private fun getDefaultModel(): AiModel {
-        return aiModelsProvider.getDefaultModel().toAiModel()
     }
 
     override fun selectAiModel(aiModel: AiModel) {

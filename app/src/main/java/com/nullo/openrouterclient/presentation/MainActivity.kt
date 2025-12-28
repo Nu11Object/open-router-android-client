@@ -104,10 +104,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateCurrentAiModel(aiModel: AiModel?) {
-        aiModel?.let {
-            with(binding) {
-                tvModelName.text = it.name
-                displayReasoningSupport(it.supportsReasoning)
+        with(binding) {
+            if (aiModel != null) {
+                tvModelName.text = aiModel.name
+                displayReasoningSupport(aiModel.supportsReasoning)
+            } else {
+                tvModelName.text = getString(R.string.model_not_selected)
+                tvSupportsReasoning.text = getString(R.string.model_select_hint)
             }
         }
     }

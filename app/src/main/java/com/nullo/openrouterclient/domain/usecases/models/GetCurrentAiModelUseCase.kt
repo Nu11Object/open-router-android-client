@@ -9,7 +9,7 @@ class GetCurrentAiModelUseCase @Inject constructor(
     private val repository: SettingsRepository
 ) {
 
-    operator fun invoke(): StateFlow<AiModel> {
+    operator fun invoke(): StateFlow<AiModel?> {
         return repository.currentModel
     }
 }
