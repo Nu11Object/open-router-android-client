@@ -1,6 +1,6 @@
 package com.nullo.openrouterclient.data.repository
 
-import com.nullo.openrouterclient.data.ErrorResponseProvider
+import com.nullo.openrouterclient.data.ErrorProvider
 import com.nullo.openrouterclient.data.database.chat.ChatDao
 import com.nullo.openrouterclient.data.database.chat.MessageDbEntityProvider
 import com.nullo.openrouterclient.data.mapper.ApiResponseMapper
@@ -21,7 +21,7 @@ class ChatRepositoryImpl @Inject constructor(
     private val chatDao: ChatDao,
     private val apiService: ApiService,
     private val messageDbEntityProvider: MessageDbEntityProvider,
-    private val errorResponseProvider: ErrorResponseProvider,
+    private val errorProvider: ErrorProvider,
     private val apiResponseMapper: ApiResponseMapper,
 ) : ChatRepository {
 
@@ -46,7 +46,7 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     override suspend fun failLoadingMessages() {
-        val error = errorResponseProvider.createCancelledError()
+        val error = errorProvider.cancelledError()
         chatDao.failLoadingMessages(error.header, error.message)
     }
 
@@ -62,11 +62,11 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     override suspend fun replaceLoadingWithNetworkError(loadingMessageId: Long) {
-        val networkErrorResponse = errorResponseProvider.createNetworkError()
+        val error = errorProvider.networkError()
         chatDao.setErrorIntoMessageById(
             loadingMessageId,
-            networkErrorResponse.header,
-            networkErrorResponse.message
+            error.header,
+            error.message
         )
     }
 

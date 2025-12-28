@@ -2,7 +2,7 @@ package com.nullo.openrouterclient.data.mapper
 
 import com.google.gson.Gson
 import com.nullo.openrouterclient.data.Constants.UNDEFINED_ID
-import com.nullo.openrouterclient.data.ErrorResponseProvider
+import com.nullo.openrouterclient.data.ErrorProvider
 import com.nullo.openrouterclient.data.network.dto.chat.ChatResponseDto
 import com.nullo.openrouterclient.data.network.dto.chat.ErrorDto
 import com.nullo.openrouterclient.data.network.dto.chat.ErrorResponseDto
@@ -42,18 +42,14 @@ fun ErrorResponseDto.toDisplayString(): String = with(error) {
 }
 
 class ApiResponseMapper @Inject constructor(
-    private val errorResponseProvider: ErrorResponseProvider,
+    private val errorProvider: ErrorProvider,
     private val gson: Gson,
 ) {
-
-    val unknownError by lazy {
-        errorResponseProvider.createUnknownError()
-    }
 
     fun mapApiResponseToResult(response: Response<ChatResponseDto>): ChatResponseResult {
         if (response.isSuccessful) {
             val bodyMessage = response.body()?.choices?.firstOrNull()?.message
-                ?: return unknownError
+                ?: return errorProvider.unknownError()
             return ChatResponseResult.Success(
                 AiResponse(
                     text = bodyMessage.content,
@@ -62,6 +58,7 @@ class ApiResponseMapper @Inject constructor(
                 )
             )
         } else {
+            val unknownError = errorProvider.unknownError()
             val errorBody = response.errorBody()?.string()
             val errorResponseDto = runCatching {
                 gson.fromJson(errorBody, ErrorResponseDto::class.java)
