@@ -31,10 +31,10 @@
             <TextView
                 android:id="@+id/tv_close"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
+                android:layout_height="48dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="@string/close"
                 android:textColor="@color/light_purple"
@@ -117,19 +117,30 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ProgressBar
-            android:id="@+id/pb_cloud_loading"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_free_only"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_marginTop="16dp"
-            android:indeterminateTint="@color/light_purple"
+            android:layout_height="wrap_content"
+            android:text="@string/free_models_only"
+            android:textSize="16sp"
             android:visibility="gone" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/pb_cloud_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:indicatorColor="@color/light_purple"
+            app:indicatorSize="36dp"
+            app:trackThickness="6dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rc_cloud_models"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_marginTop="12dp"
             android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_ai_model" />

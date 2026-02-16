@@ -1,7 +1,6 @@
 package com.nullo.openrouterclient.presentation
 
 import android.util.Log
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nullo.openrouterclient.R
@@ -56,6 +55,8 @@ class MainViewModel @Inject constructor(
     val uiEvents = _uiEvents.asSharedFlow()
 
     private val _cloudAiModels = MutableStateFlow<List<AiModel>>(emptyList())
+    private val _searchQuery = MutableStateFlow("")
+    private val _freeModelsOnly = MutableStateFlow(false)
 
     private var browseCloudAiModelJob: Job? = null
     private var searchCloudAiModelJob: Job? = null
@@ -133,13 +134,10 @@ class MainViewModel @Inject constructor(
             try {
                 val models = getCloudAiModelsUseCase()
                 _cloudAiModels.value = models
-                _uiState.value = _uiState.value.copy(
-                    cloudAiModels = models,
-                    loadingCloudAiModels = false
-                )
             } catch (_: Exception) {
-                _uiState.value = _uiState.value.copy(loadingCloudAiModels = false)
                 emitError(ErrorType.NETWORK_ERROR)
+            } finally {
+                _uiState.value = _uiState.value.copy(loadingCloudAiModels = false)
             }
         }
     }
@@ -148,14 +146,12 @@ class MainViewModel @Inject constructor(
         searchCloudAiModelJob?.cancel()
         searchCloudAiModelJob = viewModelScope.launch {
             delay(SEARCH_DEBOUNCE_MS)
-            val original = _cloudAiModels.value
-            val filtered = if (query.isBlank()) {
-                original
-            } else {
-                original.filter { it.name.contains(query, ignoreCase = true) }
-            }
-            _uiState.value = _uiState.value.copy(cloudAiModels = filtered)
+            _searchQuery.value = query
         }
+    }
+
+    fun setFreeModelsFilter(enabled: Boolean) {
+        _freeModelsOnly.value = enabled
     }
 
     fun pinModel(aiModel: AiModel) {
@@ -174,6 +170,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             launch { handleLoadingFailureUseCase() }
             launch { collectUiState() }
+            launch { observeFilters() }
         }
     }
 
@@ -195,6 +192,42 @@ class MainViewModel @Inject constructor(
         }.collect { newState ->
             _uiState.value = newState
         }
+    }
+
+    private suspend fun observeFilters() {
+        combine(
+            _searchQuery,
+            _freeModelsOnly,
+            _cloudAiModels
+        ) { _, _, _ -> }
+            .collect {
+                applyModelFilters()
+            }
+    }
+
+    private fun applyModelFilters() {
+        val original = _cloudAiModels.value
+        val query = _searchQuery.value
+        val freeOnly = _freeModelsOnly.value
+
+        val filtered = original.filter { model ->
+
+            val matchesName = if (query.isBlank()) {
+                true
+            } else {
+                model.name.contains(query, ignoreCase = true)
+            }
+
+            val matchesFree = if (freeOnly) {
+                model.freeToUse
+            } else {
+                true
+            }
+
+            matchesName && matchesFree
+        }
+
+        _uiState.value = _uiState.value.copy(cloudAiModels = filtered)
     }
 
     private suspend fun emitError(errorType: ErrorType) {

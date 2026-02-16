@@ -44,4 +44,5 @@
     <string name="answer">Answer:</string>
     <string name="model_not_selected">No model selected</string>
     <string name="model_select_hint">Pick one from the catalog</string>
+    <string name="free_models_only">Free models only</string>
 </resources>

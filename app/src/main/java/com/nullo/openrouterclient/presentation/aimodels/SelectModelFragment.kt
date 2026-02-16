@@ -115,6 +115,9 @@ class SelectModelFragment : BottomSheetDialogFragment() {
                 enableCloudModelsSection()
                 viewModel.browseCloudModels()
             }
+            switchFreeOnly.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.setFreeModelsFilter(isChecked)
+            }
         }
     }
 
@@ -127,6 +130,7 @@ class SelectModelFragment : BottomSheetDialogFragment() {
             btnBrowseModels.visibility = View.GONE
 
             tilModelName.visibility = View.VISIBLE
+            switchFreeOnly.visibility = View.VISIBLE
             rcCloudModels.visibility = View.VISIBLE
             pbCloudLoading.visibility = View.VISIBLE
         }
