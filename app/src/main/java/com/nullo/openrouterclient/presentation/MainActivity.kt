@@ -152,13 +152,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun launchModelsMenu() {
-        val bottomSheetDialog = SelectModelFragment.Companion.newInstance()
-        bottomSheetDialog.show(supportFragmentManager, SelectModelFragment.Companion.TAG)
+        val bottomSheetDialog = SelectModelFragment.newInstance()
+        bottomSheetDialog.show(supportFragmentManager, SelectModelFragment.TAG)
     }
 
     private fun launchSettingsMenu() {
-        val bottomSheetDialog = SettingsFragment.Companion.newInstance()
-        bottomSheetDialog.show(supportFragmentManager, SettingsFragment.Companion.TAG)
+        val bottomSheetDialog = SettingsFragment.newInstance()
+        bottomSheetDialog.show(supportFragmentManager, SettingsFragment.TAG)
     }
 
     private fun showMessage(message: String) {

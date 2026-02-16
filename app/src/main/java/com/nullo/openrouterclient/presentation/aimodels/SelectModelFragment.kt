@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nullo.openrouterclient.R
 import com.nullo.openrouterclient.databinding.FragmentSelectModelBinding
@@ -39,10 +40,15 @@ class SelectModelFragment : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupBottomSheetBehavior()
         setupRecyclerViews()
         setupClickListeners()
         setupCloudModelsSearchField()
         observeViewModel()
+    }
+
+    private fun setupBottomSheetBehavior() {
+        (dialog as? BottomSheetDialog)?.behavior?.isDraggable = false
     }
 
     private fun setupRecyclerViews() {
@@ -101,9 +107,14 @@ class SelectModelFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupClickListeners() {
-        binding.btnBrowseModels.setOnClickListener {
-            enableCloudModelsSection()
-            viewModel.browseCloudModels()
+        with(binding) {
+            tvClose.setOnClickListener {
+                dismiss()
+            }
+            btnBrowseModels.setOnClickListener {
+                enableCloudModelsSection()
+                viewModel.browseCloudModels()
+            }
         }
     }
 
