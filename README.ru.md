@@ -1,3 +1,9 @@
+### Репозиторий устарел!
+Теперь разработка ведётся здесь: https://github.com/Nu11Object/void-openrouter-client
+
+---
+
+
 [English](README.md) | **Русский**
 ![Logo](./assets/ru/logo.png)
 
